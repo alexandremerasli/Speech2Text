@@ -19,37 +19,76 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"/>
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/socialNetwork">
-        <RadioButton android:id="@+id/messenger"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Messenger"/>
-        <RadioButton android:id="@+id/whatsapp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Whatsapp"/>
-    </RadioGroup>
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout android:orientation="vertical"
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_height="match_parent">
-        <Button
-            android:id="@+id/sendMessage"
+
+        <LinearLayout android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send text"/>
-        <Button
-            android:id="@+id/deleteMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete text"/>
+            android:gravity="center"
+            android:layout_height="match_parent">
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/socialNetwork">
+                <RadioButton android:id="@+id/messenger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Messenger"/>
+                <RadioButton android:id="@+id/whatsapp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Whatsapp"/>
+                <RadioButton android:id="@+id/mail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="E-mail"/>
+                <RadioButton android:id="@+id/google"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Google query"/>
+            </RadioGroup>
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/language">
+                <RadioButton android:id="@+id/french"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="French"/>
+                <RadioButton android:id="@+id/english"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="English"/>
+                <RadioButton android:id="@+id/spanish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Spanish"/>
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/sendMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send text"/>
+            <Button
+                android:id="@+id/deleteMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete text"/>
         </LinearLayout>
     </LinearLayout>
-<LinearLayout
+
+</LinearLayout>
+
+    <LinearLayout
     android:layout_width="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_centerInParent="true"

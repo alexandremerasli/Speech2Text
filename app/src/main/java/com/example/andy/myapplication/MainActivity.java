@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -25,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     EditText textWidget;
     Button sendButton;
     Button deleteText;
-    RadioGroup radioGroup;
-    RadioButton Messenger,Whatsapp;
+    RadioButton Messenger,Whatsapp,Mail,Google;
+    RadioButton French,English,Spanish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +38,13 @@ public class MainActivity extends AppCompatActivity {
         textWidget = findViewById(R.id.text);
         sendButton = findViewById(R.id.sendMessage);
         deleteText = findViewById(R.id.deleteMessage);
-        radioGroup = findViewById(R.id.socialNetwork);
         Messenger = (RadioButton)findViewById(R.id.messenger);
         Whatsapp = (RadioButton)findViewById(R.id.whatsapp);
+        Mail = (RadioButton)findViewById(R.id.mail);
+        Google = (RadioButton)findViewById(R.id.google);
+        French = (RadioButton)findViewById(R.id.french);
+        English = (RadioButton)findViewById(R.id.english);
+        Spanish = (RadioButton)findViewById(R.id.spanish);
         ImageView speak = findViewById(R.id.speak);
 
         speak.setOnClickListener(new View.OnClickListener() {
@@ -46,7 +53,18 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                //
+                if(French.isChecked()) {
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fr");
+                } else if (English.isChecked()) {
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+                } else if (Spanish.isChecked()) {
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es");
+                }
+                else {
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                }
+
                 intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
                         "Need to speak");
                 try {
@@ -66,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
                     sendMessenger();
                 } else if (Whatsapp.isChecked()) {
                     sendWhatsApp();
+                } else if (Mail.isChecked()) {
+                    sendEmail();
+                } else if (Google.isChecked()) {
+                    googleQuery();
                 }
             }
         });
@@ -132,6 +154,29 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
                     .show();
         }
-
     }
+
+    public void sendEmail() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        //intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "some@email.address" });
+        //intent.putExtra(Intent.EXTRA_SUBJECT, "subject");
+        String text = textWidget.getText().toString();
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(intent, ""));
+    }
+
+    public void googleQuery() {
+        String text = textWidget.getText().toString();
+        String escapedQuery = null;
+        try {
+            escapedQuery = URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.parse("http://www.google.com/#q=" + escapedQuery);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
 }
