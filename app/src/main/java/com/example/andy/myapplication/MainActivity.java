@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     EditText textWidget;
     Button sendButton;
     Button deleteText;
+    RadioGroup radioGroup;
+    RadioButton Messenger,Whatsapp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,11 @@ public class MainActivity extends AppCompatActivity {
         textWidget = findViewById(R.id.text);
         sendButton = findViewById(R.id.sendMessage);
         deleteText = findViewById(R.id.deleteMessage);
+        radioGroup = findViewById(R.id.socialNetwork);
+        Messenger = (RadioButton)findViewById(R.id.messenger);
+        Whatsapp = (RadioButton)findViewById(R.id.whatsapp);
         ImageView speak = findViewById(R.id.speak);
+
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMessenger();
-                //sendWhatsApp();
+                if(Messenger.isChecked()) {
+                    sendMessenger();
+                } else if (Whatsapp.isChecked()) {
+                    sendWhatsApp();
+                }
             }
         });
 
@@ -107,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("text/plain");
-            String text = "YOUR TEXT HERE";
+            String text = textWidget.getText().toString();
 
             PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             //Check if package exists or not. If not then code
