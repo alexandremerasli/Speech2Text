@@ -74,6 +74,11 @@
             android:gravity="center"
             android:layout_height="match_parent">
             <Button
+                android:id="@+id/endRecording"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End recording"/>
+            <Button
                 android:id="@+id/sendMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
