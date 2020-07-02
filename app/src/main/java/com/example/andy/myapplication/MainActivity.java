@@ -29,13 +29,13 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private final int REQ_CODE = 100;
     EditText textWidget;
-    Button endRecording,sendButton,deleteText;
+    Button endRecording,sendButton,deleteAll,deleteLastSentence;
     RadioButton Messenger,Whatsapp,Mail,Google;
     RadioButton French,English,Spanish;
     SpeechRecognizer mSpeechRecognizer;
     Intent mSpeechRecognizerIntent;
     boolean stopListering = false;
-    String textToSend = "";
+    static ArrayList<String> textToSend = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         textWidget = findViewById(R.id.text);
         endRecording = findViewById(R.id.endRecording);
         sendButton = findViewById(R.id.sendMessage);
-        deleteText = findViewById(R.id.deleteMessage);
+        deleteAll = findViewById(R.id.deleteMessage);
+        deleteLastSentence = findViewById(R.id.deleteLastSentence);
         Messenger = (RadioButton)findViewById(R.id.messenger);
         Whatsapp = (RadioButton)findViewById(R.id.whatsapp);
         Mail = (RadioButton)findViewById(R.id.mail);
@@ -121,10 +122,17 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                         String s = "";
                         for (String result:matches)
-                            s += result + "\n";
+                            //s += result + "\n";
+                            s = result;
 
-                        textToSend = textToSend + s;
-                        textWidget.setText(textToSend);
+                        if (Character.isLetter((char) s.charAt(s.length()-1)))
+                            s = s + ". ";
+                        else
+                            s = s + " ";
+
+                        s = s.substring(0, 1).toUpperCase() + s.substring(1);
+                        textToSend.add(s);
+                        textWidget.setText(arrayToString(textToSend));
                     }
 
                     @Override
@@ -178,20 +186,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        deleteText.setOnClickListener(new View.OnClickListener() {
+        deleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 textWidget.setText("");
-                textToSend = "";
+                for (int i=textToSend.size()-1;i>=1;i++)
+                    textToSend.remove(i);
+                mSpeechRecognizer.stopListening();
+                mSpeechRecognizer.destroy();
+                mSpeechRecognizer.cancel();
+                Toast.makeText(getApplicationContext(),"Click again on the mic to record yourself",Toast.LENGTH_SHORT);
+            }
+        });
+
+        deleteLastSentence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textToSend.remove(textToSend.size()-1);
+                textWidget.setText(arrayToString(textToSend));
+                Toast.makeText(getApplicationContext(),"Click again on the mic to record yourself",Toast.LENGTH_SHORT);
             }
         });
     }
 
+    public String arrayToString(ArrayList<String> text) {
+        String concat = "";
+        for (int i=0;i<=text.size()-1;i++)
+            concat = concat + text.get(i);
+        return concat;
+    }
+
     public void sendMessenger() {
         Intent sendIntent = new Intent();
-        textToSend = textWidget.getText().toString();
+        String text = textWidget.getText().toString();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT,textToSend);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,text);
         sendIntent.setType("text/plain");
         sendIntent.setPackage("com.facebook.orca");
         try {
@@ -209,14 +238,14 @@ public class MainActivity extends AppCompatActivity {
 
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("text/plain");
-            textToSend = textWidget.getText().toString();
+            String text = textWidget.getText().toString();
 
             PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             //Check if package exists or not. If not then code
             //in catch block will be called
             waIntent.setPackage("com.whatsapp");
 
-            waIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
+            waIntent.putExtra(Intent.EXTRA_TEXT, text);
             startActivity(Intent.createChooser(waIntent, "Share with"));
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -230,16 +259,16 @@ public class MainActivity extends AppCompatActivity {
         mSpeechRecognizerIntent.setType("plain/text");
         //mSpeechRecognizerIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "some@email.address" });
         //mSpeechRecognizerIntent.putExtra(Intent.EXTRA_SUBJECT, "subject");
-        textToSend = textWidget.getText().toString();
-        mSpeechRecognizerIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
+        String text = textWidget.getText().toString();
+        mSpeechRecognizerIntent.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(Intent.createChooser(mSpeechRecognizerIntent, ""));
     }
 
     public void googleQuery() {
-        textToSend = textWidget.getText().toString();
+        String text = textWidget.getText().toString();
         String escapedQuery = null;
         try {
-            escapedQuery = URLEncoder.encode(textToSend, "UTF-8");
+            escapedQuery = URLEncoder.encode(text, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

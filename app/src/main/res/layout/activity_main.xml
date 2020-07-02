@@ -84,11 +84,17 @@
                 android:layout_height="wrap_content"
                 android:text="Send text"/>
             <Button
-                android:id="@+id/deleteMessage"
+                android:id="@+id/deleteLastSentence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete text"/>
+                android:text="Delete last sentence"/>
+
         </LinearLayout>
+        <Button
+            android:id="@+id/deleteMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete all"/>
     </LinearLayout>
 
 </LinearLayout>
